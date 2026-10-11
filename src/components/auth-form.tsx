@@ -58,7 +58,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
     <div className="grid min-h-dvh lg:grid-cols-2">
       <div className="hidden flex-col justify-between bg-primary p-12 text-primary-fg lg:flex">
         <div className="flex items-center gap-2.5 text-lg font-bold">
-          <span className="flex size-10 items-center justify-center rounded-xl bg-white/15">₹</span> Expense Tracker
+          <span className="flex size-10 items-center justify-center rounded-xl bg-white/15">₹</span> Smart Expense Tracker
         </div>
         <div className="flex max-w-md flex-col gap-6">
           <h2 className="text-4xl font-bold leading-tight">Log an expense in under five seconds.</h2>

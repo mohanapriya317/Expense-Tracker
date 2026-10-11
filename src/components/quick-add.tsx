@@ -588,12 +588,17 @@ function VoiceCapture({ onDone, onCancel }: { onDone: (text: string) => void; on
 function ReceiptCapture({ file, onResult, onCancel }: { file: File; onResult: (r: ReceiptResponse) => void; onCancel: () => void }) {
   const [stage, setStage] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  const preview = useMemo(() => (file.type.startsWith("image/") ? URL.createObjectURL(file) : null), [file]);
+  const isImage = file.type.startsWith("image/");
+  const previewRef = useRef<HTMLImageElement>(null);
   const started = useRef(false);
 
-  useEffect(() => () => {
-    if (preview) URL.revokeObjectURL(preview);
-  }, [preview]);
+  // Object URL is created per mount so a remount (e.g. StrictMode) never shows a revoked URL.
+  useEffect(() => {
+    if (!isImage || !previewRef.current) return;
+    const url = URL.createObjectURL(file);
+    previewRef.current.src = url;
+    return () => URL.revokeObjectURL(url);
+  }, [file, isImage]);
 
   useEffect(() => {
     if (started.current) return;
@@ -615,9 +620,9 @@ function ReceiptCapture({ file, onResult, onCancel }: { file: File; onResult: (r
   return (
     <div className="flex flex-col gap-5">
       <div className="relative mx-auto h-64 w-48 overflow-hidden rounded-xl border border-line bg-surface-muted">
-        {preview ? (
+        {isImage ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={preview} alt="Receipt being scanned" className="h-full w-full object-cover" />
+          <img ref={previewRef} alt="Receipt being scanned" className="h-full w-full object-cover" />
         ) : (
           <div className="flex h-full items-center justify-center text-sm text-muted">PDF receipt</div>
         )}

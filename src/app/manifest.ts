@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Expense Tracker",
+    name: "Smart Expense Tracker",
     short_name: "Expenses",
     description: "Log expenses by text, voice or receipt.",
     start_url: "/",

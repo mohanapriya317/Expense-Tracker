@@ -6,7 +6,7 @@ import "./globals.css";
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: { default: "Expense Tracker", template: "%s · Expense Tracker" },
+  title: { default: "Smart Expense Tracker", template: "%s · Smart Expense Tracker" },
   description: "Log expenses by text, voice or receipt. Budgets, splits, reports and insights.",
   manifest: "/manifest.webmanifest",
 };

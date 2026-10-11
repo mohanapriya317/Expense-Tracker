@@ -121,7 +121,7 @@ function Shell({ children }: { children: React.ReactNode }) {
       <aside className="sticky top-0 hidden h-dvh w-[76px] shrink-0 flex-col gap-4 border-r border-line bg-surface px-3 py-5 md:flex xl:w-60 xl:px-4">
         <Link href="/" className="flex items-center gap-2.5 px-1.5">
           <span className="flex size-9 items-center justify-center rounded-xl bg-primary text-lg font-bold text-primary-fg">₹</span>
-          <span className="hidden text-base font-bold xl:inline">Expense Tracker</span>
+          <span className="hidden text-base leading-tight font-bold xl:inline">Smart Expense Tracker</span>
         </Link>
         <button
           type="button"

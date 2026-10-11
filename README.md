@@ -1,4 +1,4 @@
-# Expense Tracker
+# Smart Expense Tracker
 
 Log an expense in a few seconds by typing ("petrol 200"), speaking, or uploading a receipt screenshot. Budgets with alerts, splits with friends, monthly reports (PDF and Excel), a financial health score, forecasts, and an assistant that answers questions about your spending.
 
