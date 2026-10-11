@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# uploaded receipts
+/uploads/
+!.env.example
+
+# OCR model downloaded on first receipt scan
+*.traineddata
