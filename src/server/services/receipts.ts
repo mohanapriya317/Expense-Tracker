@@ -41,13 +41,22 @@ export async function deleteUserFiles(userId: Types.ObjectId) {
 /** OCR with tesseract.js. The English model downloads on first use and is cached in the temp dir. */
 export async function ocrImage(buf: Buffer): Promise<string> {
   const { createWorker } = await import("tesseract.js");
-  const worker = await createWorker("eng", undefined, { cachePath: tmpdir() });
-  try {
-    const timeout = new Promise<never>((_, reject) => setTimeout(() => reject(new Error("OCR timed out")), 45_000));
-    const result = await Promise.race([worker.recognize(buf), timeout]);
+  let worker: Awaited<ReturnType<typeof createWorker>> | undefined;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  // The deadline covers worker start-up and the model download too, so a stuck worker can't hang the request.
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error("OCR timed out")), 45_000);
+  });
+  const run = async () => {
+    worker = await createWorker("eng", undefined, { cachePath: tmpdir(), errorHandler: (err) => console.error("[ocr worker]", err) });
+    const result = await worker.recognize(buf);
     return result.data.text ?? "";
+  };
+  try {
+    return await Promise.race([run(), timeout]);
   } finally {
-    await worker.terminate().catch(() => undefined);
+    clearTimeout(timer);
+    await worker?.terminate().catch(() => undefined);
   }
 }
 

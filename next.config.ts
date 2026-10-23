@@ -8,7 +8,11 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["pdfkit", "exceljs", "tesseract.js", "mongoose", "unpdf", "@napi-rs/canvas"],
   // tesseract.js starts its worker and loads its wasm core by computed paths the tracer can't follow.
   outputFileTracingIncludes: {
-    "/api/receipts": ["./node_modules/tesseract.js/src/**/*", "./node_modules/tesseract.js-core/*.{js,wasm}"],
+    "/api/receipts": [
+      "./node_modules/tesseract.js/**/*",
+      "./node_modules/tesseract.js-core/**/*",
+      "./node_modules/{bmp-js,zlibjs,wasm-feature-detect,is-url,regenerator-runtime,idb-keyval}/**/*",
+    ],
   },
   turbopack: {
     rules: {
