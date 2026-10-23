@@ -7,9 +7,9 @@ import { readReceiptFile } from "@/server/services/receipts";
 export const GET = route<RouteContext<"/api/receipts/[id]">>(async (_req, ctx) => {
   const user = await requireUser();
   const id = oid((await ctx.params).id, "Receipt not found.");
-  const receipt = await Receipt.findOne({ _id: id, userId: user._id }).lean<ReceiptDoc>();
+  const receipt = await Receipt.findOne({ _id: id, userId: user._id }).select("+data").lean<ReceiptDoc>();
   if (!receipt) throw notFound("Receipt not found.");
-  const buf = await readReceiptFile(receipt.filePath).catch(() => null);
+  const buf = await readReceiptFile(receipt).catch(() => null);
   if (!buf) throw notFound("Receipt file is missing.");
   return new Response(new Uint8Array(buf), {
     headers: { "Content-Type": receipt.mimeType ?? "application/octet-stream", "Cache-Control": "private, max-age=3600" },

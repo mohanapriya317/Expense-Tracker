@@ -95,7 +95,9 @@ expenseSchema.index({ merchant: "text", note: "text" });
 const receiptSchema = schema(
   {
     userId: { type: Schema.Types.ObjectId, required: true },
-    filePath: { type: String, required: true },
+    // Legacy local-disk path; new receipts keep their bytes in `data` (serverless hosts have no writable disk).
+    filePath: String,
+    data: { type: Buffer, select: false },
     mimeType: String,
     size: Number,
     sha256: { type: String, required: true },
@@ -230,7 +232,8 @@ export interface ExpenseDoc extends Timestamps {
 export interface ReceiptDoc extends Timestamps {
   _id: Types.ObjectId;
   userId: Types.ObjectId;
-  filePath: string;
+  filePath?: string;
+  data?: Buffer;
   mimeType?: string;
   size?: number;
   sha256: string;

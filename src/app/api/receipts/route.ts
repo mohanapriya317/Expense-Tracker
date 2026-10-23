@@ -3,7 +3,7 @@ import { badRequest, rateLimit, route } from "@/server/http";
 import { Expense, Receipt, type ExpenseDoc, type ReceiptDoc } from "@/server/models";
 import { parseContextFor } from "@/server/services/categories";
 import { categoryMap, findSimilarReceiptExpense, serializeExpense } from "@/server/services/expenses";
-import { MAX_RECEIPT_BYTES, RECEIPT_TYPES, saveReceiptFile, scanReceipt, sha256 } from "@/server/services/receipts";
+import { MAX_RECEIPT_BYTES, RECEIPT_TYPES, scanReceipt, sha256 } from "@/server/services/receipts";
 
 export const maxDuration = 60;
 
@@ -18,8 +18,7 @@ export const POST = route(async (req) => {
   const file = form?.get("file");
   if (!(file instanceof File)) throw badRequest("Attach a receipt image.");
   if (file.size > MAX_RECEIPT_BYTES) throw badRequest("Receipts must be 10 MB or smaller.");
-  const ext = RECEIPT_TYPES[file.type];
-  if (!ext) throw badRequest("Use a JPG, PNG, WebP or PDF file.");
+  if (!RECEIPT_TYPES[file.type]) throw badRequest("Use a JPG, PNG, WebP or PDF file.");
 
   const buf = Buffer.from(await file.arrayBuffer());
   const hash = sha256(buf);
@@ -34,10 +33,9 @@ export const POST = route(async (req) => {
     ? { status: "scanned" as const, text: previous.ocrText, parsed: previous.extracted }
     : await scanReceipt(buf, file.type, ctx);
 
-  const filePath = previous?.filePath ?? (await saveReceiptFile(user._id, hash, ext, buf));
   const receipt = await Receipt.create({
     userId: user._id,
-    filePath,
+    data: buf,
     mimeType: file.type,
     size: file.size,
     sha256: hash,
